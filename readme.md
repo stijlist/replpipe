@@ -29,3 +29,19 @@ The first terminal will print something like:
     1
     user=> ^Csignal: interrupt
 
+## Vim integration
+
+...can be a one-liner.
+
+    vnoremap <leader>e :!tee .repl-pipe<CR>
+
+Assumes you've run replpipe already in Vim's working directory.
+
+So you can open an empty buffer, type `(println "hello world")`, visually select it with `V`, and then hit leader-e.
+
+The replpipe process will print in response:
+
+    (println "hello world")
+    hello world
+    nil
+    user=>
