@@ -29,5 +29,3 @@ The first terminal will print something like:
     1
     user=> ^Csignal: interrupt
 
-Haven't finished up graceful termination for the program yet - defers aren't
-run after ctrl-c.
