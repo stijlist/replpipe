@@ -1,5 +1,37 @@
 # replpipe
 
+# Problem statement
+
+If you want a program (e.g. your text editor) to send data to evaluate to a Clojure (or other) repl, your options are to copy and paste the text yourself or use a language or editor specific plugin.
+
+e.g.
+
+- tslime
+- slimv
+- vim-fireplace
+
+slimv and vim-fireplace use specialized protocols (SWANK and nREPL, respectively) to start and communicate with the REPL.
+
+tslime is blessedly simple but execs `tmux-send-keys` for every write.
+
+The Clojure team gave us an interesting option by adding some nice default tooling (expose a stream-based REPL over a socket server).
+This is almost perfect - your program can start, connect to the socket server, write to a new socket, then exit.
+
+Evaluating code in the REPL is now almost as easy as writing to a file.
+
+However, there's a small hitch - each time you connect, you get a new REPL session.
+This makes some sense because the socket server serves you a new socket every time you connect.
+
+But from the user's perspective, they want to be able to incrementally do stateful things in the REPL - e.g. define a function in one evaluation and then use it in the next.
+
+You could manage these REPL sessions from your editor. That would require keeping the socket somewhere as state, and if you exited your editor your REPL session would go away.
+
+Ideally, though, given that it's possible to just type text into the REPL, we should be able to preserve that simplicity and allow your program or editor to just write to a file.
+
+This program is an adapter between a FIFO (letting any program write data to evaluate and exit) and a socket (a stateful stream), letting you decouple the lifetime of your REPL from the editor.
+
+The factoring could be even better - it'd be great to have a simple way to split a socket into its two flows - `split-socket localhost:5555 -read=.repl-in -write=.repl-out` which creates two fifos with those names.
+
 # Usage
 
 Create a clojure socket repl via either:
